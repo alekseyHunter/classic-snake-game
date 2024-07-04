@@ -30,7 +30,7 @@ fun JetTextButton(
             disabledContentColor = MaterialTheme.colorScheme.onTertiaryContainer
         )
     ) {
-        Text(text = text)
+        Text(text = text, style = MaterialTheme.typography.bodyLarge)
     }
 }
 

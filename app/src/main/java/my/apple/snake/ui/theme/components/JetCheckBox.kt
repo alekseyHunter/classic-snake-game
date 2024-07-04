@@ -19,13 +19,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import my.apple.snake.R
 import my.apple.snake.ui.theme.AppleSnakeTheme
 
 @Composable
 fun JetCheckBox(
     checked: Boolean,
-    hint: String,
+    label: String,
     modifier: Modifier = Modifier,
     onChange: (Boolean) -> Unit
 ) {
@@ -58,7 +57,11 @@ fun JetCheckBox(
             }
         }
 
-        Text(text = hint, color = MaterialTheme.colorScheme.primary)
+        Text(
+            text = label,
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.bodySmall
+        )
     }
 }
 
