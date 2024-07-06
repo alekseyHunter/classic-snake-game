@@ -7,9 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,10 +17,10 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun JetProgressBar(
-    modifier: Modifier = Modifier,
     partCount: Int,
     selectedPartCount: Int,
-    strokeWidth: Dp,
+    modifier: Modifier = Modifier,
+    strokeWidth: Dp = 8.dp,
     content: @Composable BoxScope.() -> Unit
 ) {
     Box(
@@ -56,7 +53,7 @@ fun JetProgressBar(
 @Preview
 @Composable
 private fun ShowPreview() {
-    JetProgressBar(Modifier.size(48.dp), 4, 1, 8.dp) {
+    JetProgressBar(4, 1, modifier = Modifier.size(48.dp)) {
 
     }
 }
