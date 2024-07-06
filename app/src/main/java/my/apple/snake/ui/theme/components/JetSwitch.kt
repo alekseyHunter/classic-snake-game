@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -16,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,6 +29,7 @@ fun JetSwitch(
     selectedItemId: Int,
     modifier: Modifier = Modifier,
     label: String? = null,
+    shape: RoundedCornerShape = RoundedCornerShape(32.dp),
     onChange: (Int) -> Unit
 ) {
     val selectedItem = items.getOrNull(selectedItemId) ?: ""
@@ -74,11 +75,11 @@ fun JetSwitch(
                 Modifier
                     .fillMaxWidth()
                     .height(48.dp)
-                    .background(Color.White, RoundedCornerShape(32.dp))
+                    .background(MaterialTheme.colorScheme.surface, shape)
                     .border(
                         2.dp,
                         MaterialTheme.colorScheme.secondaryContainer,
-                        RoundedCornerShape(32.dp)
+                        shape
                     )
                     .align(Alignment.Center)
             ) {
@@ -95,7 +96,10 @@ fun JetSwitch(
                     .size(48.dp)
                     .background(
                         containerPreviousButton, RoundedCornerShape(
-                            topStart = 32.dp, bottomStart = 32.dp, topEnd = 8.dp, bottomEnd = 8.dp
+                            topStart = shape.topStart,
+                            bottomStart = shape.bottomStart,
+                            topEnd = CornerSize(8.dp),
+                            bottomEnd = CornerSize(8.dp)
                         )
                     )
                     .align(Alignment.CenterStart)
@@ -121,7 +125,10 @@ fun JetSwitch(
                     .size(48.dp)
                     .background(
                         containerNextButton, RoundedCornerShape(
-                            topEnd = 32.dp, bottomEnd = 32.dp, topStart = 8.dp, bottomStart = 8.dp
+                            topEnd = shape.topEnd,
+                            bottomEnd = shape.bottomEnd,
+                            topStart = CornerSize(8.dp),
+                            bottomStart = CornerSize(8.dp)
                         )
                     )
                     .align(Alignment.CenterEnd)
