@@ -19,7 +19,11 @@ import androidx.compose.ui.unit.dp
 import my.apple.snake.ui.theme.AppleSnakeTheme
 
 @Composable
-fun JetCounter(resId: Int, value: String, modifier: Modifier = Modifier) {
+fun JetCounter(
+    resId: Int,
+    value: String,
+    modifier: Modifier = Modifier
+) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(6.dp),

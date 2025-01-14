@@ -57,8 +57,7 @@ fun JetSwitch(
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
     ) {
         Box(
             Modifier
@@ -162,7 +161,9 @@ fun JetSwitch(
 private fun ShowPreview() {
     AppleSnakeTheme {
         JetSwitch(
-            modifier = Modifier.fillMaxWidth(), items = listOf("Нормально"), selectedItemId = 0
+            modifier = Modifier.fillMaxWidth(),
+            items = listOf("Легко", "Нормально", "Сложно"),
+            selectedItemId = 0
         ) {}
     }
 }

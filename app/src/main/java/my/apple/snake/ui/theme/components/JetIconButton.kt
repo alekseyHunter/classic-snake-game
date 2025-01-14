@@ -16,15 +16,22 @@ import my.apple.snake.ui.theme.AppleSnakeTheme
 
 @Composable
 fun JetIconButton(
-    resId: Int, iconColor: Color, modifier: Modifier = Modifier, onClick: () -> Unit
+    resId: Int,
+    iconColor: Color,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
         modifier = modifier,
+        enabled = enabled,
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = iconColor
+            contentColor = iconColor,
+            disabledContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            disabledContentColor = MaterialTheme.colorScheme.onTertiaryContainer
         )
     ) {
         Icon(
@@ -36,14 +43,29 @@ fun JetIconButton(
 
 @Preview
 @Composable
-private fun ShowPreview() {
+private fun ShowPreview1() {
     AppleSnakeTheme {
         JetIconButton(
-            com.microsoft.fluent.mobile.icons.R.drawable.ic_fluent_arrow_sort_up_24_filled,
-            MaterialTheme.colorScheme.surface
+            resId = com.microsoft.fluent.mobile.icons.R.drawable.ic_fluent_arrow_sort_up_24_filled,
+            iconColor = MaterialTheme.colorScheme.surface
         ) {
 
         }
     }
 }
+
+@Preview
+@Composable
+private fun ShowPreview2() {
+    AppleSnakeTheme {
+        JetIconButton(
+            resId = com.microsoft.fluent.mobile.icons.R.drawable.ic_fluent_arrow_sort_up_24_filled,
+            iconColor = MaterialTheme.colorScheme.surface,
+            enabled = false
+        ) {
+
+        }
+    }
+}
+
 

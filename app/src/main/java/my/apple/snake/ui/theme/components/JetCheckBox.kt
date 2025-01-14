@@ -69,7 +69,10 @@ fun JetCheckBox(
 @Composable
 private fun ShowPreview() {
     AppleSnakeTheme {
-        JetCheckBox(true, "Урон от столкновения со стенами") {
+        JetCheckBox(
+            checked = true,
+            label = "Урон от столкновения со стенами"
+        ) {
 
         }
     }
