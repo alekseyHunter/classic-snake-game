@@ -2,17 +2,18 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 android {
     namespace = "my.apple.snake"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "my.apple.snake"
         minSdk = 24
-        targetSdk = 34
-        versionCode = 1
+        targetSdk = 35
+        versionCode = 6
         versionName = "1.0"
 
         vectorDrawables {
@@ -22,7 +23,9 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -38,9 +41,6 @@ android {
     }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
     }
     packaging {
         resources {
@@ -64,9 +64,12 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.androidx.navigation.runtime.ktx)
 
-    //Icons
+    // Icons
     implementation (libs.fluent.system.icons)
 
-    debugImplementation(libs.androidx.ui.tooling)
+    // DataStore
+    implementation(libs.androidx.datastore)
+    implementation(libs.kotlinx.serialization.json)
 
+    debugImplementation(libs.androidx.ui.tooling)
 }
