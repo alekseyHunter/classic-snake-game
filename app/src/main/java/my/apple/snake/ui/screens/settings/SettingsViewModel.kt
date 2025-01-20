@@ -5,6 +5,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import my.apple.snake.base.archirecture.BaseViewModel
 import my.apple.snake.data.local.datastore.DataStoreManager
+import my.apple.snake.data.local.datastore.GameBoardSize
+import my.apple.snake.data.local.datastore.GameLevel
+import my.apple.snake.data.local.datastore.SpawnChangeOfBonusItems
 import my.apple.snake.ui.screens.settings.models.GameRuleEvent
 import my.apple.snake.ui.screens.settings.models.SettingsAction
 import my.apple.snake.ui.screens.settings.models.SettingsEvent
@@ -58,19 +61,22 @@ class SettingsViewModel(
 
     private fun changeChance(newValue: Int) {
         viewModelScope.launch {
-            dataStoreManager.saveSpawnChanceOfBonusItems(newValue)
+            val spawnChangeOfBonusItems = SpawnChangeOfBonusItems.entries[newValue]
+            dataStoreManager.saveSpawnChanceOfBonusItems(spawnChangeOfBonusItems)
         }
     }
 
     private fun changeBoardSize(newValue: Int) {
         viewModelScope.launch {
-            dataStoreManager.saveBoardSize(newValue)
+            val boardSize = GameBoardSize.entries[newValue]
+            dataStoreManager.saveBoardSize(boardSize)
         }
     }
 
     private fun changeDifficultyLevel(newValue: Int) {
         viewModelScope.launch {
-            dataStoreManager.saveGameLevel(newValue)
+            val gameLevel = GameLevel.entries[newValue]
+            dataStoreManager.saveGameLevel(gameLevel)
         }
     }
 

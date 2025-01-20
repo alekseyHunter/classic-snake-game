@@ -46,7 +46,7 @@ fun SettingsViewDisplay(
         JetSection(label = "Уровень сложности") {
             JetSwitch(
                 items = listOf("Легко", "Нормально", "Сложно"),
-                selectedItemId = state.gameLevel,
+                selectedItemId = state.gameLevel.ordinal,
 
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -57,7 +57,7 @@ fun SettingsViewDisplay(
         JetSection(label = "Шанс появления бонусных предметов") {
             JetSwitch(
                 items = listOf("Редко", "Часто", "Регулярно"),
-                selectedItemId = state.spawnChangeOfBonusItems,
+                selectedItemId = state.spawnChangeOfBonusItems.ordinal,
 
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -68,7 +68,7 @@ fun SettingsViewDisplay(
         JetSection(label = "Размер игровой карты") {
             JetSwitch(
                 items = listOf("Маленькая", "Средняя", "Огромная"),
-                selectedItemId = state.boardSize,
+                selectedItemId = state.boardSize.ordinal,
 
                 modifier = Modifier.fillMaxWidth()
             ) {
