@@ -9,19 +9,19 @@ class DataStoreManager(context: Context) {
     private val dataStore = context.settingsDataStore
     val appSettings: Flow<UserSettings> = dataStore.data
 
-    suspend fun saveGameLevel(value: Int) {
+    suspend fun saveGameLevel(value: GameLevel) {
         dataStore.updateData {
             it.copy(gameLevel = value)
         }
     }
 
-    suspend fun saveBoardSize(value: Int) {
+    suspend fun saveBoardSize(value: GameBoardSize) {
         dataStore.updateData {
             it.copy(boardSize = value)
         }
     }
 
-    suspend fun saveSpawnChanceOfBonusItems(value: Int) {
+    suspend fun saveSpawnChanceOfBonusItems(value: SpawnChangeOfBonusItems) {
         dataStore.updateData {
             it.copy(spawnChangeOfBonusItems = value)
         }
@@ -35,9 +35,12 @@ class DataStoreManager(context: Context) {
 
     suspend fun saveGameResult(value: UserGameResult) {
         dataStore.updateData {
-            val results = it.gameResults.toMutableList()
+            val results = it.gameResults.getOrDefault(it.gameLevel, emptyList()).toMutableList()
             results.add(value)
-            it.copy(gameResults = results)
+            results.sortBy { it.score }
+            val topResults = results.take(10)
+            it.gameResults.toMutableMap()[it.gameLevel] = topResults
+            it.copy(gameResults = it.gameResults)
         }
     }
 

@@ -4,11 +4,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserSettings(
-    val gameLevel: Int = 0,
-    val boardSize: Int = 0,
-    val spawnChangeOfBonusItems: Int = 0,
+    val gameLevel: GameLevel = GameLevel.Normal,
+    val boardSize: GameBoardSize = GameBoardSize.MEDIUM,
+    val spawnChangeOfBonusItems: SpawnChangeOfBonusItems = SpawnChangeOfBonusItems.Normal,
     val gameRules: GameRules = GameRules(),
-    val gameResults: List<UserGameResult> = emptyList()
+    val gameResults: Map<GameLevel, List<UserGameResult>> = emptyMap()
 )
 
 @Serializable
@@ -24,3 +24,24 @@ data class GameRules(
     val throwTailEnabled: Boolean = false,
     val damageColliderEnabled: Boolean = true
 )
+
+@Serializable
+enum class GameLevel {
+    Easy,
+    Normal,
+    Hard,
+}
+
+@Serializable
+enum class SpawnChangeOfBonusItems {
+    Low,
+    Normal,
+    Often
+}
+
+@Serializable
+enum class GameBoardSize(val rows: Int, val columns: Int) {
+    SMALL(10, 10),
+    MEDIUM(20, 20),
+    HUGE(30, 30)
+}
