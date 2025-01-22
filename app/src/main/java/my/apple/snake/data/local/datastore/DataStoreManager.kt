@@ -35,12 +35,15 @@ class DataStoreManager(context: Context) {
 
     suspend fun saveGameResult(value: UserGameResult) {
         dataStore.updateData {
-            val results = it.gameResults.getOrDefault(it.gameLevel, emptyList()).toMutableList()
+            val gameResults = it.gameResults.toMutableMap()
+            val results = gameResults.getOrDefault(it.gameLevel, emptyList()).toMutableList()
+
             results.add(value)
-            results.sortBy { it.score }
+            results.sortByDescending { it.score }
             val topResults = results.take(10)
-            it.gameResults.toMutableMap()[it.gameLevel] = topResults
-            it.copy(gameResults = it.gameResults)
+            gameResults[it.gameLevel] = topResults
+
+            it.copy(gameResults = gameResults)
         }
     }
 

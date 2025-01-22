@@ -21,7 +21,7 @@ data class UserGameResult(
 data class GameRules(
     val randomWallsEnabled: Boolean = true,
     val extraLivesEnabled: Boolean = false,
-    val throwTailEnabled: Boolean = false,
+    val throwTailEnabled: Boolean = true,
     val damageColliderEnabled: Boolean = true
 )
 
@@ -42,6 +42,6 @@ enum class SpawnChangeOfBonusItems {
 @Serializable
 enum class GameBoardSize(val rows: Int, val columns: Int) {
     SMALL(10, 10),
-    MEDIUM(20, 20),
-    HUGE(30, 30)
+    MEDIUM(15, 15),
+    HUGE(20, 20)
 }
