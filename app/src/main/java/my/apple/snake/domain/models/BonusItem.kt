@@ -7,6 +7,5 @@ data class BonusItem(
 
 sealed class BonusStatus {
     data object ExtraLife : BonusStatus()
-    data object IncreaseSpeed : BonusStatus()
     data object IncreaseScore: BonusStatus()
 }

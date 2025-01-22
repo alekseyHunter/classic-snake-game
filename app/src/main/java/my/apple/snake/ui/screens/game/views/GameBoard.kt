@@ -1,80 +1,92 @@
 package my.apple.snake.ui.screens.game.views
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.scale
+import my.apple.snake.R
+import my.apple.snake.data.local.datastore.GameBoardSize
+import my.apple.snake.data.local.datastore.GameRules
 import my.apple.snake.domain.models.BonusItem
 import my.apple.snake.domain.models.BonusStatus
-import my.apple.snake.domain.models.Direction
+import my.apple.snake.domain.models.GameLevelConfig
 import my.apple.snake.domain.models.GameStatus
 import my.apple.snake.domain.models.Point
 import my.apple.snake.domain.models.Snake
-import my.apple.snake.domain.models.GameBoardSettings
 import my.apple.snake.ui.screens.game.models.GameViewState
 
 @Composable
 fun GameBoard(
-    state: GameViewState.Display,
+    boardSettings: GameBoardSize,
     snake: Snake,
     bonusItems: List<BonusItem>,
-    onMove: (Direction) -> Unit,
-    onChangeBoardSize: (IntSize) -> Unit
+    blockItems: List<Point>
 ) {
-    BoxWithConstraints(Modifier.fillMaxSize()) {
+    val context = LocalContext.current
+
+    val snakeHeadImage = remember {
+        context.getDrawable(R.drawable.ic_snake_head)?.toBitmap()?.asImageBitmap()
+    }
+
+    val snakeTailImage = remember {
+        context.getDrawable(R.drawable.ic_snake_tail)?.toBitmap()?.asImageBitmap()
+    }
+
+    val imageBitmap = remember {
+        context.getDrawable(R.drawable.ic_apple)?.toBitmap()?.asImageBitmap()
+    }
+
+    val wallImageBitmap = remember {
+        context.getDrawable(R.drawable.ic_wall)?.toBitmap()?.asImageBitmap()
+    }
+
+    BoxWithConstraints(
+        Modifier
+            .wrapContentSize()
+            .border(6.dp, Color(0xFFD7E0D7), RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(16.dp))
+            .padding(6.dp)
+    ) {
         Canvas(
             Modifier
-                .requiredSize(this.maxWidth, this.maxWidth)
-                .pointerInput(Unit) {
-                    detectDragGestures { _, dragDistance ->
-                        val direction = when {
-                            dragDistance.x > 0 -> Direction.RIGHT
-                            dragDistance.x < 0 -> Direction.LEFT
-                            dragDistance.y > 0 -> Direction.DOWN
-                            dragDistance.y < 0 -> Direction.UP
-                            else -> Direction.NONE
-                        }
-
-                        if (direction != Direction.NONE) {
-                            onMove(direction)
-                        }
-                    }
-                }
-                .onSizeChanged {
-                    onChangeBoardSize.invoke(IntSize(it.width, it.width))
-                }
+                .requiredSize(this.maxWidth - 6.dp, this.maxWidth - 6.dp)
         ) {
-
             val canvasWidth = size.width
             val canvasHeight = size.height
 
-            val fieldWidth = canvasWidth / state.boardSettings.rows
-            val fieldHeight = canvasHeight / state.boardSettings.columns
+            val fieldWidth = canvasWidth / boardSettings.rows
+            val fieldHeight = canvasHeight / boardSettings.columns
 
-
-            drawBoard(
-                this,
-                state.boardSettings.rows,
-                state.boardSettings.columns,
-                fieldWidth,
-                fieldHeight
-            )
-
-            drawSnake(this, snake, fieldWidth, fieldHeight)
-            bonusItems.forEach {
-                drawApple(this, it, fieldWidth, fieldHeight)
+            bonusItems.forEach { item ->
+                imageBitmap?.let {
+                    drawObject(this, imageBitmap, item.position, fieldWidth, fieldHeight)
+                }
+            }
+            blockItems.forEach { item ->
+                wallImageBitmap?.let {
+                    drawObject(this, wallImageBitmap, item, fieldWidth, fieldHeight)
+                }
+            }
+            if (snakeHeadImage != null && snakeTailImage != null) {
+                drawSnake(this, snake, snakeHeadImage, snakeTailImage, fieldWidth, fieldHeight)
             }
         }
     }
@@ -108,59 +120,51 @@ fun drawBoard(
     }
 }
 
-fun drawSnake(drawScope: DrawScope, snake: Snake, width: Float, height: Float) {
-
+fun drawSnake(
+    drawScope: DrawScope,
+    snake: Snake,
+    snakeHead: ImageBitmap,
+    snakeTail: ImageBitmap,
+    width: Float,
+    height: Float
+) {
     snake.body.forEachIndexed { index, point ->
-        if (index == 0) {
-            drawScope.drawRoundRect(
-                color = Color.Green,
-                topLeft = Offset(
-                    (point.x * width),
-                    (point.y * height)
-                ),
-                size = Size(width, height),
-                cornerRadius = CornerRadius(width / 4f, height / 4f)
-            )
-
-            drawScope.drawCircle(
-                color = Color.Black,
-                center = Offset(
-                    (point.x * width + width / 4),
-                    (point.y * height + height / 4)
-                ),
-                radius = width / 6f
-            )
-
-            drawScope.drawCircle(
-                color = Color.Black,
-                center = Offset(
-                    (point.x * width + width / 4 * 3),
-                    (point.y * height + height / 4)
-                ),
-                radius = width / 6f
-            )
+        val image = if (index == 0) {
+            snakeHead
         } else {
-            drawScope.drawRoundRect(
-                color = Color.Green,
-                topLeft = Offset(
-                    (point.x * width),
-                    (point.y * height)
-                ),
-                size = Size(width, height),
-                cornerRadius = CornerRadius(width / 4f, height / 4f)
-            )
+            snakeTail
         }
+
+        drawObject(
+            drawScope = drawScope,
+            imageBitmap = image,
+            coordinates = point,
+            width = width,
+            height = height
+        )
     }
 }
 
-fun drawApple(drawScope: DrawScope, apple: BonusItem, width: Float, height: Float) {
-    drawScope.drawCircle(
-        color = Color.Red,
-        center = Offset(
-            (apple.position.x * width + width / 2),
-            (apple.position.y * height + height / 2)
-        ),
-        radius = width / 2f
+fun drawObject(
+    drawScope: DrawScope,
+    imageBitmap: ImageBitmap,
+    coordinates: Point,
+    width: Float,
+    height: Float
+) {
+    val scaledBitmap = imageBitmap.asAndroidBitmap()
+        .scale(
+            width = width.toInt(),
+            height = height.toInt()
+        )
+        .asImageBitmap()
+
+    drawScope.drawImage(
+        image = scaledBitmap,
+        topLeft = Offset(
+            coordinates.x * width,
+            coordinates.y * height
+        )
     )
 }
 
@@ -168,15 +172,23 @@ fun drawApple(drawScope: DrawScope, apple: BonusItem, width: Float, height: Floa
 @Composable
 private fun ShowPreview() {
     val state = GameViewState.Display(
-        snake = Snake(),
+        snake = Snake(listOf()),
+        1,
+        GameLevelConfig.Medium,
         bonusItems = listOf(BonusItem(Point(10, 1), BonusStatus.IncreaseScore)),
+        blockItems = listOf(Point(10, 5)),
         gameStatus = GameStatus.Playing,
-        boardSettings = GameBoardSettings(20, 20)
+        boardSettings = GameBoardSize.SMALL,
+        time = 0,
+        sessionTime = "00:00",
+        score = 0,
+        gameRules = GameRules()
     )
 
     GameBoard(
-        state = state, snake = state.snake, bonusItems = state.bonusItems, onMove = {},
-    ) {
-
-    }
+        boardSettings = state.boardSettings,
+        snake = state.snake,
+        bonusItems = state.bonusItems,
+        blockItems = state.blockItems
+    )
 }
