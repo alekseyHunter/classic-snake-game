@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -17,10 +16,9 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.scale
 import my.apple.snake.R
 import my.apple.snake.data.local.datastore.GameBoardSize
@@ -40,23 +38,10 @@ fun GameBoard(
     bonusItems: List<BonusItem>,
     blockItems: List<Point>
 ) {
-    val context = LocalContext.current
-
-    val snakeHeadImage = remember {
-        context.getDrawable(R.drawable.ic_snake_head)?.toBitmap()?.asImageBitmap()
-    }
-
-    val snakeTailImage = remember {
-        context.getDrawable(R.drawable.ic_snake_tail)?.toBitmap()?.asImageBitmap()
-    }
-
-    val imageBitmap = remember {
-        context.getDrawable(R.drawable.ic_apple)?.toBitmap()?.asImageBitmap()
-    }
-
-    val wallImageBitmap = remember {
-        context.getDrawable(R.drawable.ic_wall)?.toBitmap()?.asImageBitmap()
-    }
+    val snakeHeadImage = ImageBitmap.imageResource(R.drawable.ic_snake_head)
+    val snakeTailImage = ImageBitmap.imageResource(R.drawable.ic_snake_tail)
+    val appleImage = ImageBitmap.imageResource(R.drawable.ic_apple)
+    val wallImage = ImageBitmap.imageResource(R.drawable.ic_wall)
 
     BoxWithConstraints(
         Modifier
@@ -76,18 +61,13 @@ fun GameBoard(
             val fieldHeight = canvasHeight / boardSettings.columns
 
             bonusItems.forEach { item ->
-                imageBitmap?.let {
-                    drawObject(this, imageBitmap, item.position, fieldWidth, fieldHeight)
-                }
+                drawObject(this, appleImage, item.position, fieldWidth, fieldHeight)
             }
             blockItems.forEach { item ->
-                wallImageBitmap?.let {
-                    drawObject(this, wallImageBitmap, item, fieldWidth, fieldHeight)
-                }
+                drawObject(this, wallImage, item, fieldWidth, fieldHeight)
             }
-            if (snakeHeadImage != null && snakeTailImage != null) {
-                drawSnake(this, snake, snakeHeadImage, snakeTailImage, fieldWidth, fieldHeight)
-            }
+
+            drawSnake(this, snake, snakeHeadImage, snakeTailImage, fieldWidth, fieldHeight)
         }
     }
 }

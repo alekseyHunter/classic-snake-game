@@ -238,7 +238,7 @@ class GameViewModel(
                             gameLevelConfig = gameLevelConfig,
                             bonusItems = listOf(),
                             blockItems = listOf(),
-                            gameStatus = GameStatus.Playing,
+                            gameStatus = GameStatus.Stopped,
                             boardSettings = appSettings.boardSize,
                             gameRules = appSettings.gameRules,
                             time = 0L,
