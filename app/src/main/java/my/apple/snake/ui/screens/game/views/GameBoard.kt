@@ -1,24 +1,26 @@
 package my.apple.snake.ui.screens.game.views
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.scale
 import my.apple.snake.R
 import my.apple.snake.data.local.datastore.GameBoardSize
@@ -36,38 +38,84 @@ fun GameBoard(
     boardSettings: GameBoardSize,
     snake: Snake,
     bonusItems: List<BonusItem>,
-    blockItems: List<Point>
+    blockItems: List<Point>,
+    modifier: Modifier = Modifier
 ) {
-    val snakeHeadImage = ImageBitmap.imageResource(R.drawable.ic_snake_head)
-    val snakeTailImage = ImageBitmap.imageResource(R.drawable.ic_snake_tail)
-    val appleImage = ImageBitmap.imageResource(R.drawable.ic_apple)
-    val wallImage = ImageBitmap.imageResource(R.drawable.ic_wall)
+    val context = LocalContext.current
+
+    val snakeHeadImage = remember {
+        context.getDrawable(R.drawable.ic_snake_head)?.toBitmap()?.asImageBitmap()
+    }
+
+    val snakeTailImage = remember {
+        context.getDrawable(R.drawable.ic_snake_tail)?.toBitmap()?.asImageBitmap()
+    }
+
+    val appleImage = remember {
+        context.getDrawable(R.drawable.ic_apple)?.toBitmap()?.asImageBitmap()
+    }
+
+    val wallImage = remember {
+        context.getDrawable(R.drawable.ic_wall)?.toBitmap()?.asImageBitmap()
+    }
 
     BoxWithConstraints(
-        Modifier
-            .wrapContentSize()
-            .border(6.dp, Color(0xFFD7E0D7), RoundedCornerShape(16.dp))
-            .clip(RoundedCornerShape(16.dp))
+        modifier = modifier
+            .border(
+                6.dp,
+                MaterialTheme.colorScheme.onTertiaryContainer.copy(0.35f),
+                RoundedCornerShape(16.dp)
+            )
             .padding(6.dp)
     ) {
         Canvas(
-            Modifier
-                .requiredSize(this.maxWidth - 6.dp, this.maxWidth - 6.dp)
+            modifier = Modifier
+                .requiredSize(this.maxWidth - 12.dp)
+                .background(
+                    MaterialTheme.colorScheme.onTertiaryContainer.copy(0.05f),
+                    RoundedCornerShape(16.dp)
+                )
         ) {
-            val canvasWidth = size.width
-            val canvasHeight = size.height
+            val canvasWidth = this.size.width
+            val canvasHeight = this.size.height
 
-            val fieldWidth = canvasWidth / boardSettings.rows
-            val fieldHeight = canvasHeight / boardSettings.columns
+            val fieldWidth = canvasWidth / boardSettings.columns
+            val fieldHeight = canvasHeight / boardSettings.rows
 
-            bonusItems.forEach { item ->
-                drawObject(this, appleImage, item.position, fieldWidth, fieldHeight)
+            if (appleImage != null) {
+                bonusItems.forEach { item ->
+                    drawObject(
+                        drawScope = this,
+                        imageBitmap = appleImage,
+                        coordinates = item.position,
+                        width = fieldWidth,
+                        height = fieldHeight
+                    )
+                }
             }
-            blockItems.forEach { item ->
-                drawObject(this, wallImage, item, fieldWidth, fieldHeight)
+
+            if (wallImage != null) {
+                blockItems.forEach { item ->
+                    drawObject(
+                        drawScope = this,
+                        imageBitmap = wallImage,
+                        coordinates = item,
+                        width = fieldWidth,
+                        height = fieldHeight
+                    )
+                }
             }
 
-            drawSnake(this, snake, snakeHeadImage, snakeTailImage, fieldWidth, fieldHeight)
+            if (snakeHeadImage != null && snakeTailImage != null) {
+                drawSnake(
+                    drawScope = this,
+                    snake = snake,
+                    snakeHead = snakeHeadImage,
+                    snakeTail = snakeTailImage,
+                    width = fieldWidth,
+                    height = fieldHeight
+                )
+            }
         }
     }
 }
