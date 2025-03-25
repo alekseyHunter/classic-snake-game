@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "my.apple.snake"
+    namespace = "ru.mygames.classicsnake"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "my.apple.snake"
+        applicationId = "ru.mygames.classicsnake"
         minSdk = 24
         targetSdk = 35
         versionCode = 7
