@@ -1,7 +1,6 @@
 package ru.mygames.classicsnake.ui.theme.components
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,7 +29,7 @@ fun JetCircleProgressBar(
     content: @Composable BoxScope.() -> Unit
 ) {
     val selectedPartColor = MaterialTheme.colorScheme.secondary
-    val unselectedPartColor = MaterialTheme.colorScheme.onSecondary
+    val unselectedPartColor = MaterialTheme.colorScheme.onSecondaryContainer
 
     Box(
         modifier = modifier,
