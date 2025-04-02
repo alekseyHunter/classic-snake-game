@@ -31,7 +31,7 @@ fun GameBottomBar(
     Box(
         modifier = modifier
             .background(
-                MaterialTheme.colorScheme.surface,
+                MaterialTheme.colorScheme.onSecondaryContainer.copy(0.1f),
                 RoundedCornerShape(16.dp, 16.dp, 64.dp, 64.dp)
             )
     ) {

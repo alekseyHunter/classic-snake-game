@@ -20,7 +20,6 @@ import com.microsoft.fluent.mobile.icons.R
 import ru.mygames.classicsnake.ui.theme.ClassicSnakeTheme
 import ru.mygames.classicsnake.ui.theme.components.JetCircleProgressBar
 import ru.mygames.classicsnake.ui.theme.components.JetCounter
-import kotlin.math.max
 
 @Composable
 fun GameTopBar(
@@ -38,7 +37,7 @@ fun GameTopBar(
         Row(
             modifier = Modifier
                 .background(
-                    MaterialTheme.colorScheme.surface,
+                    MaterialTheme.colorScheme.onSecondaryContainer.copy(0.15f),
                     RoundedCornerShape(16.dp)
                 )
                 .padding(horizontal = 16.dp, vertical = 8.dp),
